@@ -1,0 +1,195 @@
+:root {
+  color-scheme: dark;
+  --bg: #03050a;
+  --panel: #090e17;
+  --ink: #eff6ff;
+  --muted: #8ea4bc;
+  --line: #243044;
+  --glow: #7fffd4;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; min-height: 100%; background: var(--bg); }
+
+body {
+  color: var(--ink);
+  font-family: "Courier New", ui-monospace, monospace;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(80,110,180,.12), transparent 28%),
+    radial-gradient(circle at 83% 72%, rgba(70,190,180,.08), transparent 24%);
+}
+
+.shell { width: min(1100px, 100%); }
+
+.game-header {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px solid var(--line);
+  border-bottom: 0;
+  padding: 12px 16px;
+  background: #060a11;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-shadow: 0 0 12px rgba(127,255,212,.45);
+}
+
+.brand-mark { color: var(--glow); font-size: 1.35rem; }
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 14px 22px;
+  font-size: .95rem;
+  letter-spacing: .08em;
+}
+
+.hud b { color: #fff; }
+
+.game-wrap {
+  position: relative;
+  border: 2px solid var(--line);
+  background: #000;
+  overflow: hidden;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: pixelated;
+  background: #000;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0,0,0,.78);
+  backdrop-filter: blur(2px);
+}
+
+.overlay.shown { display: grid; }
+
+.panel {
+  width: min(620px, 92%);
+  text-align: center;
+  border: 2px solid #5f7997;
+  padding: 28px;
+  background: rgba(7,12,21,.96);
+  box-shadow: 0 0 0 5px rgba(95,121,151,.12), 0 0 42px rgba(82,200,255,.14);
+}
+
+.panel h1, .panel h2 {
+  margin: 0 0 14px;
+  letter-spacing: .14em;
+}
+
+.panel h1 { font-size: clamp(2rem, 7vw, 4.5rem); }
+.panel p { color: #b9c8d8; line-height: 1.6; }
+.tagline { color: var(--glow) !important; text-transform: uppercase; letter-spacing: .1em; }
+
+kbd {
+  border: 1px solid #607087;
+  border-bottom-width: 3px;
+  border-radius: 4px;
+  padding: 2px 7px;
+  color: #fff;
+  background: #141b26;
+}
+
+button, input {
+  font: inherit;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+button {
+  cursor: pointer;
+  border: 2px solid #cfe9ff;
+  padding: 12px 18px;
+  background: #dff3ff;
+  color: #06101a;
+  font-weight: 900;
+}
+
+button:hover, button:focus-visible { transform: translateY(-1px); filter: brightness(1.08); }
+button.secondary { margin-left: 8px; background: transparent; color: #dff3ff; }
+
+label { display: block; margin: 18px 0 8px; color: #9fb4ca; }
+input {
+  width: 112px;
+  text-align: center;
+  font-size: 2rem;
+  padding: 8px;
+  margin: 0 auto 16px;
+  display: block;
+  border: 2px solid #647992;
+  background: #02060b;
+  color: white;
+}
+
+.level-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  font-weight: 900;
+  font-size: clamp(1.8rem, 7vw, 4rem);
+  letter-spacing: .12em;
+  text-shadow: 0 0 14px #000;
+  transition: opacity .2s ease;
+}
+
+.level-card.shown { opacity: 1; }
+
+.below-game {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.instructions, .leaderboard {
+  border: 2px solid var(--line);
+  padding: 14px 16px;
+  background: var(--panel);
+}
+
+.below-game h2 { margin: 0 0 12px; font-size: 1rem; letter-spacing: .12em; color: #a8bdd2; }
+.score-key { display: flex; flex-wrap: wrap; gap: 12px 20px; color: #cad7e3; }
+.dot { display: inline-block; width: 12px; height: 12px; margin-right: 6px; box-shadow: 0 0 8px currentColor; }
+.dot.small { color: #61e9ff; background: currentColor; }
+.dot.medium { color: #a9ff68; background: currentColor; }
+.dot.large { color: #ff7edb; background: currentColor; }
+.dot.bonus { color: #ffd966; background: currentColor; }
+
+.leaderboard ol { margin: 0; padding-left: 2.2rem; }
+.leaderboard li { padding: 3px 0; }
+.leaderboard li span { float: right; color: #9cf8cf; }
+
+@media (max-width: 760px) {
+  body { padding: 8px; }
+  .game-header { align-items: flex-start; flex-direction: column; }
+  .hud { justify-content: flex-start; }
+  .below-game { grid-template-columns: 1fr; }
+  .panel { padding: 18px; }
+  .panel p { font-size: .86rem; }
+}
