@@ -14,7 +14,7 @@
     againBtn: $('playAgainButton'), saveBtn: $('saveScoreButton'), fullscreenBtn: $('fullscreenButton'),
     initials: $('initials'), final: $('finalScore'), board: $('leaderboard'),
     upgradeScore: $('upgradeScore'), upgradeChoices: $('upgradeChoices'),
-    touchLeft: $('touchLeft'), touchRight: $('touchRight'), touchFire: $('touchFire')
+    moveControls: $('moveControls'), touchLeft: $('touchLeft'), touchRight: $('touchRight'), touchFire: $('touchFire')
   };
 
   const keys = new Set();
@@ -623,12 +623,64 @@
     button.addEventListener('lostpointercapture', release);
   }
 
-  bindHoldButton(ui.touchLeft, touchPointers.left, 'ArrowLeft');
-  bindHoldButton(ui.touchRight, touchPointers.right, 'ArrowRight');
+  function setTouchDirection(dir) {
+    keys.delete('ArrowLeft');
+    keys.delete('ArrowRight');
+    ui.touchLeft.classList.remove('active');
+    ui.touchRight.classList.remove('active');
+
+    if(dir==='left'){
+      keys.add('ArrowLeft');
+      ui.touchLeft.classList.add('active');
+    } else if(dir==='right'){
+      keys.add('ArrowRight');
+      ui.touchRight.classList.add('active');
+    }
+  }
+
+  const steerPointers = new Map();
+
+  function directionFromPointer(e) {
+    const rect = ui.moveControls.getBoundingClientRect();
+    const midpoint = rect.left + rect.width / 2;
+    return e.clientX < midpoint ? 'left' : 'right';
+  }
+
+  if(ui.moveControls){
+    ui.moveControls.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      steerPointers.set(e.pointerId, directionFromPointer(e));
+      try { ui.moveControls.setPointerCapture(e.pointerId); } catch {}
+      setTouchDirection(directionFromPointer(e));
+    }, {passive:false});
+
+    ui.moveControls.addEventListener('pointermove', e => {
+      if(!steerPointers.has(e.pointerId)) return;
+      e.preventDefault();
+      const next = directionFromPointer(e);
+      steerPointers.set(e.pointerId, next);
+      setTouchDirection(next);
+    }, {passive:false});
+
+    const releaseSteer = e => {
+      steerPointers.delete(e.pointerId);
+      if(steerPointers.size===0){
+        setTouchDirection(null);
+      } else {
+        const remaining=[...steerPointers.values()].at(-1);
+        setTouchDirection(remaining);
+      }
+    };
+
+    ui.moveControls.addEventListener('pointerup', releaseSteer);
+    ui.moveControls.addEventListener('pointercancel', releaseSteer);
+    ui.moveControls.addEventListener('lostpointercapture', releaseSteer);
+  }
+
   bindHoldButton(ui.touchFire, touchPointers.fire, null, fire);
 
   // Holding FIRE repeatedly shoots at the ship's current fire-rate while a direction
-  // can remain held by a different finger/pointer at the same time.
+  // can remain held by a separate finger/pointer at the same time.
   setInterval(() => {
     if(touchPointers.fire.size>0) fire();
   }, 25);
