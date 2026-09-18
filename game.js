@@ -13,7 +13,8 @@
     levelCard: $('levelOverlay'), startBtn: $('startButton'), continueBtn: $('continueButton'),
     againBtn: $('playAgainButton'), saveBtn: $('saveScoreButton'), fullscreenBtn: $('fullscreenButton'),
     initials: $('initials'), final: $('finalScore'), board: $('leaderboard'),
-    upgradeScore: $('upgradeScore'), upgradeChoices: $('upgradeChoices')
+    upgradeScore: $('upgradeScore'), upgradeChoices: $('upgradeChoices'),
+    touchLeft: $('touchLeft'), touchRight: $('touchRight'), touchFire: $('touchFire')
   };
 
   const keys = new Set();
@@ -177,6 +178,19 @@
     ui.upgrades.classList.add('shown');
   }
 
+  function makeProgress(current, max=10, life=false) {
+    const wrap=document.createElement('div');
+    wrap.className='upgrade-progress';
+    wrap.setAttribute('aria-label', `${current} of ${max} unlocked`);
+    for(let i=1;i<=max;i++){
+      const pip=document.createElement('span');
+      pip.className='upgrade-pip' + (i<=current?' filled':'') + (life?' life':'');
+      pip.title=`Level ${i}`;
+      wrap.appendChild(pip);
+    }
+    return wrap;
+  }
+
   function renderUpgrades() {
     ui.upgradeScore.textContent=Math.floor(score);
     ui.upgradeChoices.innerHTML='';
@@ -209,7 +223,7 @@
         renderUpgrades();
       });
 
-      card.append(h,p,c,b);
+      card.append(h,makeProgress(lives,10,true),p,c,b);
       ui.upgradeChoices.appendChild(card);
     }
 
@@ -245,7 +259,7 @@
         renderUpgrades();
       });
 
-      card.append(h,p,c,b);
+      card.append(h,makeProgress(lvl,def.max,false),p,c,b);
       ui.upgradeChoices.appendChild(card);
     }
   }
@@ -584,6 +598,40 @@
 
   addEventListener('keyup',e=>keys.delete(e.code));
   document.addEventListener('fullscreenchange',syncFullscreen);
+
+  const touchPointers = { left:new Set(), right:new Set(), fire:new Set() };
+
+  function bindHoldButton(button, bucket, keyCode, onPress) {
+    if(!button) return;
+    const release = e => {
+      bucket.delete(e.pointerId);
+      if(bucket.size===0){
+        if(keyCode) keys.delete(keyCode);
+        button.classList.remove('active');
+      }
+    };
+    button.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      bucket.add(e.pointerId);
+      try { button.setPointerCapture(e.pointerId); } catch {}
+      if(keyCode) keys.add(keyCode);
+      button.classList.add('active');
+      if(onPress) onPress();
+    }, {passive:false});
+    button.addEventListener('pointerup', release);
+    button.addEventListener('pointercancel', release);
+    button.addEventListener('lostpointercapture', release);
+  }
+
+  bindHoldButton(ui.touchLeft, touchPointers.left, 'ArrowLeft');
+  bindHoldButton(ui.touchRight, touchPointers.right, 'ArrowRight');
+  bindHoldButton(ui.touchFire, touchPointers.fire, null, fire);
+
+  // Holding FIRE repeatedly shoots at the ship's current fire-rate while a direction
+  // can remain held by a different finger/pointer at the same time.
+  setInterval(() => {
+    if(touchPointers.fire.size>0) fire();
+  }, 25);
 
   ui.startBtn.addEventListener('click',start);
   ui.againBtn.addEventListener('click',start);
