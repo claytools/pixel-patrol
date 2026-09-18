@@ -105,25 +105,29 @@ input { width:112px; text-align:center; font-size:2rem; padding:8px; margin:0 au
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 10px;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   z-index: 7;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 0 12px;
+  padding: 0 18px;
   pointer-events: none;
 }
 .move-controls {
   display: flex;
-  gap: 10px;
+  gap: 18px;
+  padding: 10px;
+  margin: -10px;
+  touch-action: none;
+  pointer-events: auto;
 }
 .touch-button {
   pointer-events: auto;
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
-  min-width: 72px;
-  min-height: 58px;
-  border-radius: 14px;
+  min-width: 88px;
+  min-height: 68px;
+  border-radius: 16px;
   border: 2px solid rgba(207,233,255,.9);
   background: rgba(9,14,23,.82);
   color: #fff;
@@ -132,7 +136,8 @@ input { width:112px; text-align:center; font-size:2rem; padding:8px; margin:0 au
   box-shadow: 0 0 18px rgba(127,255,212,.12);
 }
 .fire-button {
-  min-width: 92px;
+  min-width: 112px;
+  min-height: 72px;
   color: #06101a;
   background: rgba(223,243,255,.92);
 }
@@ -165,7 +170,7 @@ input { width:112px; text-align:center; font-size:2rem; padding:8px; margin:0 au
 
 @media (hover: none), (pointer: coarse), (max-width: 800px) {
   .mobile-controls { display: flex; }
-  .game-wrap { padding-bottom: 82px; }
+  .game-wrap { padding-bottom: 116px; }
   canvas { width: 100%; }
 }
 
@@ -185,12 +190,12 @@ input { width:112px; text-align:center; font-size:2rem; padding:8px; margin:0 au
 
 body.fullscreen-mode .mobile-controls { display: flex; }
 body.fullscreen-mode .game-wrap {
-  padding-bottom: 82px;
+  padding-bottom: 124px;
   align-content: center;
 }
 body.fullscreen-mode canvas {
-  width: min(100vw, calc((100svh - 138px) * 1.5));
-  max-height: calc(100svh - 138px);
+  width: min(100vw, calc((100svh - 176px) * 1.5));
+  max-height: calc(100svh - 176px);
 }
 @media (orientation: landscape) and (max-height: 600px) {
   body.fullscreen-mode .game-header {
@@ -210,14 +215,28 @@ body.fullscreen-mode canvas {
   body.fullscreen-mode .shell { display:block; }
   body.fullscreen-mode .game-wrap {
     height:100svh;
-    padding-bottom:68px;
+    padding-bottom:104px;
     border:0;
   }
   body.fullscreen-mode canvas {
-    width:min(100vw, calc((100svh - 68px) * 1.5));
-    max-height:calc(100svh - 68px);
+    width:min(100vw, calc((100svh - 104px) * 1.5));
+    max-height:calc(100svh - 104px);
   }
-  body.fullscreen-mode .mobile-controls { bottom:5px; padding:0 8px; }
-  body.fullscreen-mode .touch-button { min-height:52px; min-width:66px; }
-  body.fullscreen-mode .fire-button { min-width:88px; }
+  body.fullscreen-mode .mobile-controls {
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    padding: 0 14px;
+  }
+  body.fullscreen-mode .move-controls { gap: 16px; }
+  body.fullscreen-mode .touch-button { min-height:62px; min-width:82px; }
+  body.fullscreen-mode .fire-button { min-width:108px; min-height:66px; }
+}
+
+@media (max-width: 430px) {
+  .mobile-controls {
+    bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+    padding: 0 14px;
+  }
+  .move-controls { gap: 16px; }
+  .touch-button { min-width: 84px; min-height: 70px; font-size: 1.5rem; }
+  .fire-button { min-width: 110px; min-height: 74px; font-size: 1.08rem; }
 }
