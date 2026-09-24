@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#05070c" />
   <title>Pixel Invaders</title>
   <link rel="stylesheet" href="style.css" />
@@ -32,10 +32,12 @@
       </div></div>
 
       <div id="upgradeOverlay" class="overlay"><div class="panel upgrade-panel">
-        <p class="eyebrow">LEVEL CLEARED</p><h2>SHIP UPGRADE BAY</h2>
-        <p class="upgrade-bank">AVAILABLE SCORE: <strong id="upgradeScore">0</strong></p>
+        <div class="shop-heading">
+          <p class="eyebrow">LEVEL CLEARED</p><h2>SHIP UPGRADE BAY</h2>
+          <p class="upgrade-bank">AVAILABLE SCORE: <strong id="upgradeScore">0</strong></p>
+        </div>
         <div id="upgradeChoices" class="upgrade-grid"></div>
-        <button id="continueButton" type="button" class="secondary">SKIP / CONTINUE</button>
+        <div class="shop-footer"><button id="continueButton" type="button">NEXT LEVEL ▶</button></div>
       </div></div>
 
       <div id="gameOverOverlay" class="overlay"><div class="panel">
@@ -56,8 +58,12 @@
     </section>
 
     <section class="below-game">
-      <div class="instructions"><h2>SCORING</h2><div class="score-key">
-        <span><i class="dot small"></i> Scout +100</span><span><i class="dot medium"></i> Striker +200</span><span><i class="dot large"></i> Brute +400</span><span><i class="dot bonus"></i> Bonus ship +1000</span>
+      <div class="instructions"><h2>CARTER'S INVADERS</h2><div class="score-key">
+        <span><i class="dot yellow"></i> 1 m Yellow +100</span>
+        <span><i class="dot orange"></i> 3 m Orange +150</span>
+        <span><i class="dot purple"></i> 5 m Purple +250</span>
+        <span><i class="dot green"></i> 7 m Green +450</span>
+        <span><i class="dot bonus"></i> Bonus ship +1000</span>
       </div></div>
       <div class="leaderboard"><h2>HIGH SCORES</h2><ol id="leaderboard"></ol></div>
     </section>
